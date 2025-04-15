@@ -1,68 +1,60 @@
-/**
- * Data Catalog Project Starter Code - SEA Stage 2
- *
- * This file is where you should be doing most of your work. You should
- * also make changes to the HTML and CSS files, but we want you to prioritize
- * demonstrating your understanding of data structures, and you'll do that
- * with the JavaScript code you write in this file.
- *
- * The comments in this file are only to help you learn how the starter code
- * works. The instructions for the project are in the README. That said, here
- * are the three things you should do first to learn about the starter code:
- * - 1 - Change something small in index.html or style.css, then reload your
- *    browser and make sure you can see that change.
- * - 2 - On your browser, right click anywhere on the page and select
- *    "Inspect" to open the browser developer tools. Then, go to the "console"
- *    tab in the new window that opened up. This console is where you will see
- *    JavaScript errors and logs, which is extremely helpful for debugging.
- *    (These instructions assume you're using Chrome, opening developer tools
- *    may be different on other browsers. We suggest using Chrome.)
- * - 3 - Add another string to the titles array a few lines down. Reload your
- *    browser and observe what happens. You should see a fourth "card" appear
- *    with the string you added to the array, but a broken image.
- *
- */
 
-const FRESH_PRINCE_URL =
-  "https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg";
-const CURB_POSTER_URL =
-  "https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg";
-const EAST_LOS_HIGH_POSTER_URL =
-  "https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg";
+const JW_PEI_URL =
+  "https://i.pinimg.com/736x/f6/8b/cc/f68bccf94dadc27e11105fb47cd09c76.jpg";
+const MANGO_URL =
+  "https://i.pinimg.com/736x/38/c8/a0/38c8a015fb6358aa409ddab1189a5aa7.jpg";
+const MADEWELL_URL =
+  "https://i.pinimg.com/736x/81/e4/f3/81e4f36d315e92f558f37dc91a184fc6.jpg";
+const C_N_K_URL =
+  "https://i.pinimg.com/736x/6d/84/1b/6d841b81ebdedda1b248e43bce99f285.jpg";
+const ANTH_URL =
+  "https://i.pinimg.com/736x/ad/2e/a7/ad2ea7b5ee1d3c6040d14f1d735a36c5.jpg";
 
-// This is an array of strings (TV show titles)
-let titles = [
-  "Fresh Prince of Bel Air",
-  "Curb Your Enthusiasm",
-  "East Los High",
+
+// Arrays of Obejcts (Luxury Brands titles)
+const catalogItems = [
+  {
+    title: "JW Pei",
+    imageURL: JW_PEI_URL,
+    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+  },
+  
+  {
+    title: "Mango",
+    imageURL: MANGO_URL,
+    bullets: ["Chic staples", "Under $200", "European vibes"]
+  },
+  {
+    title: "Madewell",
+    imageURL: MADEWELL_URL,
+    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+  },
+  {
+    title: "Charles & Keith",
+    imageURL: C_N_K_URL,
+    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+  },
+  {
+    title: "Anthropologie",
+    imageURL: ANTH_URL,    
+    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+  }
 ];
-// Your final submission should have much more data than this, and
-// you should use more than just an array of strings to store it all.
+
+// Set three display cards at first
+let displayLimit = 3;
 
 // This function adds cards the page to display the data in the array
-function showCards() {
+function showCards(limit = displayLimit) {
   const cardContainer = document.getElementById("card-container");
   cardContainer.innerHTML = "";
   const templateCard = document.querySelector(".card");
 
-  for (let i = 0; i < titles.length; i++) {
-    let title = titles[i];
-
-    // This part of the code doesn't scale very well! After you add your
-    // own data, you'll need to do something totally different here.
-    let imageURL = "";
-    if (i == 0) {
-      imageURL = FRESH_PRINCE_URL;
-    } else if (i == 1) {
-      imageURL = CURB_POSTER_URL;
-    } else if (i == 2) {
-      imageURL = EAST_LOS_HIGH_POSTER_URL;
-    }
-
+  catalogItems.slice(0, limit).forEach((item) => {
     const nextCard = templateCard.cloneNode(true); // Copy the template card
-    editCardContent(nextCard, title, imageURL); // Edit title and image
+    editCardContent(nextCard, item.title, item.imageURL); // Edit title and image
     cardContainer.appendChild(nextCard); // Add new card to the container
-  }
+  });
 }
 
 function editCardContent(card, newTitle, newImageURL) {
@@ -73,25 +65,55 @@ function editCardContent(card, newTitle, newImageURL) {
 
   const cardImage = card.querySelector("img");
   cardImage.src = newImageURL;
-  cardImage.alt = newTitle + " Poster";
+  cardImage.alt = newTitle + "  Image";
 
-  // You can use console.log to help you debug!
-  // View the output by right clicking on your website,
-  // select "Inspect", then click on the "Console" tab
   console.log("new card:", newTitle, "- html: ", card);
 }
 
 // This calls the addCards() function when the page is first loaded
-document.addEventListener("DOMContentLoaded", showCards);
+document.addEventListener("DOMContentLoaded", () => {
+  showCards(); 
+});
 
+// Reminder - Wise Quote
 function quoteAlert() {
   console.log("Button Clicked!");
   alert(
-    "I guess I can kiss heaven goodbye, because it got to be a sin to look this good!"
+    "Call it eco-fashion if you like, I think it is just common sense."
   );
 }
 
+// Remove Cards
 function removeLastCard() {
-  titles.pop(); // Remove last item in titles array
-  showCards(); // Call showCards again to refresh
+  catalogItems.pop(); // Remove last item in titles array
+  showCards();
 }
+
+// Add New Cards
+function addCards() {
+  //Edge Case - if all cards are showing
+  if (displayLimit >= catalogItems.length) {
+    alert("Those are all the cards we have!");
+    return;
+  }
+
+  displayLimit++;
+  showCards();
+}
+
+// Sort
+function sortCards(criteria) {
+  switch(criteria) {
+    case 'price-low':
+      currentItems.sort((a, b) => a.price - b.price);
+      break;
+    case 'rating':
+      currentItems.sort((a, b) => b.rating - a.rating);
+      break;
+    default:
+      // Reset to original order
+      currentItems = [...catalogItems];
+  }
+  showCards();
+}
+
