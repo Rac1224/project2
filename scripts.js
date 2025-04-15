@@ -16,35 +16,38 @@ const catalogItems = [
   {
     title: "JW Pei",
     imageURL: JW_PEI_URL,
-    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+    bullets: ["Chic staples", "Under $200", "European vibes"]
   },
   
   {
     title: "Mango",
     imageURL: MANGO_URL,
-    bullets: ["Chic staples", "Under $200", "European vibes"]
+    bullets: ["Luxe-Looking Basics", "Under $150", "Accessible"]
   },
+
   {
     title: "Madewell",
     imageURL: MADEWELL_URL,
-    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+    bullets: ["Vintage-Inspired", "Under $100", "Quality basics"]
   },
+
   {
     title: "Charles & Keith",
     imageURL: C_N_K_URL,
-    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+    bullets: ["Simple Elemet", "Under $200", "Minimalistic Aesthetic"]
   },
+
   {
     title: "Anthropologie",
     imageURL: ANTH_URL,    
-    bullets: ["Vegan leather", "Under $100", "Trendy styles"]
+    bullets: ["Bohemian Aesthetic", "Under $100", "Trendy-Foraw styles"]
   }
 ];
 
 // Set three display cards at first
 let displayLimit = 3;
 
-// This function adds cards the page to display the data in the array
+// Display the data in the arrays
 function showCards(limit = displayLimit) {
   const cardContainer = document.getElementById("card-container");
   cardContainer.innerHTML = "";
@@ -52,27 +55,40 @@ function showCards(limit = displayLimit) {
 
   catalogItems.slice(0, limit).forEach((item) => {
     const nextCard = templateCard.cloneNode(true); // Copy the template card
-    editCardContent(nextCard, item.title, item.imageURL); // Edit title and image
+    editCardContent(nextCard, item); // Edit title and image
     cardContainer.appendChild(nextCard); // Add new card to the container
   });
 }
 
-function editCardContent(card, newTitle, newImageURL) {
+function editCardContent(card, item) {
   card.style.display = "block";
-
   const cardHeader = card.querySelector("h2");
-  cardHeader.textContent = newTitle;
+  cardHeader.textContent = item.title;
 
   const cardImage = card.querySelector("img");
-  cardImage.src = newImageURL;
-  cardImage.alt = newTitle + "  Image";
+  cardImage.src = item.imageURL;
+  cardImage.alt = item.title + "  Image";
 
-  console.log("new card:", newTitle, "- html: ", card);
+  const ul = card.querySelector("ul");
+  ul.innerHTML = "";
+
+  item.bullets.forEach((bullet) => {
+    const li = document.createElement("li");
+    li.textContent = bullet;
+    ul.appendChild(li);
+  });
 }
 
 // This calls the addCards() function when the page is first loaded
 document.addEventListener("DOMContentLoaded", () => {
   showCards(); 
+});
+
+// Pass
+catalogItems.slice(0, limit).forEach((item) => {
+  const nextCard = templateCard.cloneNode(true);
+  editCardContent(nextCard, item);
+  cardContainer.appendChild(nextCard);
 });
 
 // Reminder - Wise Quote
@@ -84,9 +100,11 @@ function quoteAlert() {
 }
 
 // Remove Cards
-function removeLastCard() {
-  catalogItems.pop(); // Remove last item in titles array
-  showCards();
+function removeCard() {
+  if (displayLimit > 0) {
+    displayLimit--;
+    showCards();
+  }
 }
 
 // Add New Cards
@@ -101,19 +119,26 @@ function addCards() {
   showCards();
 }
 
-// Sort
-function sortCards(criteria) {
-  switch(criteria) {
-    case 'price-low':
-      currentItems.sort((a, b) => a.price - b.price);
-      break;
-    case 'rating':
-      currentItems.sort((a, b) => b.rating - a.rating);
-      break;
-    default:
-      // Reset to original order
-      currentItems = [...catalogItems];
-  }
-  showCards();
+//Sort Cards
+function sortCards(key = "title", reverse = false) {
+  const sortedItems = [...catalogItems].sort((a, b) => {
+    if (a[key] < b[key]) return reverse ? 1 : -1;
+    if (a[key] > b[key]) return reverse ? -1 : 1;
+    return 0;
+  });
+  showCardsFromArray(sortedItems);
 }
 
+function showCardsFromArray(items) {
+  const cardContainer = document.getElementById("card-container");
+  cardContainer.innerHTML = "";
+  const templateCard = document.querySelector(".card");
+
+  items.slice(0, displayLimit).forEach((item) => {
+    const nextCard = templateCard.cloneNode(true);
+    editCardContent(nextCard, item);
+    cardContainer.appendChild(nextCard);
+  });
+}
+
+// Reference: https://www.whowhatwear.com/affordable-purse-brands, https://stackoverflow.com/questions/18637418/trying-to-load-local-json-file-to-show-data-in-a-html-page-using-jquery, https://stackoverflow.com/questions/17684921/sort-json-object-in-javascript
